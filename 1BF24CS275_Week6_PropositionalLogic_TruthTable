@@ -1,0 +1,69 @@
+
+from itertools import product
+
+# Function to evaluate logical implication
+def implies(a, b):
+    return (not a) or b
+
+
+# Generate all possible truth assignments for P, Q, R
+print("TRUTH TABLE")
+print("-" * 90)
+
+print(f"{'P':^5} {'Q':^5} {'R':^5} "
+      f"{'Q -> P':^12} {'P -> ~Q':^12} "
+      f"{'Q OR R':^12} {'KB':^8}")
+
+print("-" * 90)
+
+models = []
+
+for P, Q, R in product([False, True], repeat=3):
+
+    # Evaluate each sentence in KB
+    s1 = implies(Q, P)       # Q -> P
+    s2 = implies(P, not Q)   # P -> ~Q
+    s3 = Q or R              # Q OR R
+
+    # KB is true only if all sentences are true
+    KB = s1 and s2 and s3
+
+    # Display truth table
+    def tf(value):
+        return "T" if value else "F"
+
+    print(f"{tf(P):^5} {tf(Q):^5} {tf(R):^5} "
+          f"{tf(s1):^12} {tf(s2):^12} "
+          f"{tf(s3):^12} {tf(KB):^8}")
+
+    # Store models where KB is true
+    if KB:
+        models.append((P, Q, R))
+
+
+# Display models of KB
+print("\nMODELS OF KB:")
+for model in models:
+    print(f"P={tf(model[0])}, Q={tf(model[1])}, R={tf(model[2])}")
+
+
+# Function to check entailment
+def entails(query):
+    for P, Q, R in models:
+
+        if not query(P, Q, R):
+            return False
+
+    return True
+
+
+# Check the three questions
+q1 = entails(lambda P, Q, R: R)
+q2 = entails(lambda P, Q, R: implies(R, P))
+q3 = entails(lambda P, Q, R: implies(Q, R))
+
+
+print("\nENTAILMENT RESULTS:")
+print("ii) KB entails R       :", q1)
+print("iii) KB entails R -> P :", q2)
+print("iv) KB entails Q -> R :", q3)
