@@ -1,0 +1,43 @@
+class VacuumCleanerAgent:
+
+    def __init__(self):
+        self.location = 'A'
+
+        # Get room status from the user
+        self.environment = {
+            'A': input("Is Room A Clean or Dirty? ").capitalize(),
+            'B': input("Is Room B Clean or Dirty? ").capitalize()
+        }
+
+    def perceive(self):
+        return self.environment[self.location]
+
+    def act(self):
+        status = self.perceive()
+
+        if status == 'Dirty':
+            print("Room", self.location, "is Dirty")
+            print("Action: Suck")
+            self.environment[self.location] = 'Clean'
+
+        elif self.location == 'A':
+            print("Room A is Clean")
+            print("Action: Move Right")
+            self.location = 'B'
+
+        elif self.location == 'B':
+            print("Room B is Clean")
+            print("Action: Move Left")
+            self.location = 'A'
+
+    def run(self):
+        for i in range(4):
+            print("\nStep", i + 1)
+            self.act()
+
+        print("\nFinal Environment:", self.environment)
+
+
+# Run the Vacuum Cleaner Agent
+agent = VacuumCleanerAgent()
+agent.run()
